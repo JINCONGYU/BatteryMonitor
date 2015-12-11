@@ -1,11 +1,14 @@
 package com.sanmu.lee.batterymonitor;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,11 +42,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     private String creatTable(){
-        String CREAT_TABLE = "CREATE TABLE " + TABLE_NAME + "("+ KEY_ID + " INTEGER PRIMARY KEY,"+
+        String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "("+ KEY_ID + " INTEGER PRIMARY KEY,"+
                 KEY_BATTERY +" TEXT," +
                 KEY_VOLTAGE + " TEXT," +
                 KEY_DATE + " TEXT" +")";
-        return CREAT_TABLE;
+        return CREATE_TABLE;
     }
 
 
@@ -76,9 +79,26 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return itemInfoList;
     }
 
+    public void saveData(SQLiteDatabase database,int id,String battery,String voltage,String currentDate){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("id",id);
+        contentValues.put("battery", battery);
+        contentValues.put("voltage", voltage);
+        contentValues.put("date", currentDate);
+        database.insert("BatteryInfo", null, contentValues);
+        database.close();
+    }
+
     public void deleteTable(SQLiteDatabase db,String tableName){
-        db.execSQL("DELETE FROM "+ tableName );
-        Log.d("DATABASE_TEST","DElete");
+        db.execSQL("DELETE FROM " + tableName);
+        Log.d("DATABASE_TEST", "DElete");
         db.close();
+    }
+
+    public String currentDate(){
+//        SimpleDateFormat formatter = new SimpleDateFormat ("yyyy年MM月dd日 HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat ("MMM-dd HH:mm:ss");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        return formatter.format(curDate);
     }
 }

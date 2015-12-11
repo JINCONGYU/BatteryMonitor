@@ -1,13 +1,18 @@
 package com.sanmu.lee.batterymonitor;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.telephony.IccOpenLogicalChannelResponse;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -56,10 +61,12 @@ public class PhoneState extends PhoneStateListener {
             default:
                 break;
         }
-    };
+    }
 
     public void idleMission(){
 //        this.cancelTimer();
+        this.idleRemark(this.context);
+
         this.stopAlarmMission();
 
         Log.d(PHONE_STATE, "IdleState!");
@@ -150,8 +157,34 @@ public class PhoneState extends PhoneStateListener {
         if (alarmManager!=null){
             alarmManager.cancel(pendingIntent);
             alarmManager = null;
+            autoDial(this.context);
         }
     }
+
+    private void autoDial(Context context) {
+        Uri uri = Uri.parse("tel:" + 668184);
+        Intent intent = new Intent(Intent.ACTION_CALL, uri);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        try {
+            context.startActivity(intent);
+            Log.d(PHONE_STATE, "Auto-Call");
+        } catch (ActivityNotFoundException e) {
+            Log.d("ActivityException",e.getLocalizedMessage());
+        }
+    }
+
+
+    private void idleRemark(Context context){
+        DataBaseHandler dataBaseHandler = new DataBaseHandler(context);
+        SQLiteDatabase database = dataBaseHandler.getWritableDatabase();
+
+        int id = dataBaseHandler.getCount() + 1;
+        String date = dataBaseHandler.currentDate();
+
+        dataBaseHandler.saveData(database,id,"Idle","State",date);
+    }
+
 
 
 }

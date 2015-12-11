@@ -38,6 +38,7 @@ public class AlarmService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
     }
 
     private void registerBatteryReceiver(Context context) {

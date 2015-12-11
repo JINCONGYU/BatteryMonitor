@@ -53,6 +53,8 @@ public class MonitorService extends Service {
     public void onDestroy() {
         super.onDestroy();
         stopSelf();
+        telephonyManager.listen(phoneState,PhoneState.LISTEN_NONE);
+        telephonyManager = null;
     }
 
     //Binder
@@ -77,6 +79,4 @@ public class MonitorService extends Service {
         phoneState = new PhoneState(this);
         telephonyManager.listen(phoneState, PhoneStateListener.LISTEN_CALL_STATE);
     }
-
-
 }

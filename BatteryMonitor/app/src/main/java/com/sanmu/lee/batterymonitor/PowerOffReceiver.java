@@ -27,12 +27,4 @@ public class PowerOffReceiver extends BroadcastReceiver {
         dataBaseHandler.saveData(database,currentId,"Shut","Down",currentDate);
         Toast.makeText(context,"ShutDown",Toast.LENGTH_SHORT).show();
     }
-
-    private void saveData(SQLiteDatabase database,int id,String currentDate){
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("id",id);
-        contentValues.put("date",currentDate);
-        database.insert("BatteryInfo",null,contentValues);
-        database.close();
-    }
 }

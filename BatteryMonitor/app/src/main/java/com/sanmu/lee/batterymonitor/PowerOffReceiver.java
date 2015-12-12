@@ -22,24 +22,10 @@ public class PowerOffReceiver extends BroadcastReceiver {
         SQLiteDatabase database = dataBaseHandler.getWritableDatabase();
 
         int currentId = dataBaseHandler.getCount()+1;
-        String currentDate = this.getCurrentDate();
+        String currentDate = dataBaseHandler.currentDate();
 
-        this.saveData(database,currentId,currentDate);
+        dataBaseHandler.saveData(database,currentId,"Shut","Down",currentDate);
 
         Toast.makeText(context,"ShutDown",Toast.LENGTH_SHORT).show();
-    }
-
-    private String getCurrentDate() {
-        SimpleDateFormat dateFormatformatter = new SimpleDateFormat("MMM-dd HH:MM:SS");
-        Date date = new Date(System.currentTimeMillis());
-        return dateFormatformatter.format(date);
-    }
-
-    private void saveData(SQLiteDatabase database,int id,String currentDate){
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("id",id);
-        contentValues.put("date",currentDate);
-        database.insert("BatteryInfo",null,contentValues);
-        database.close();
     }
 }
